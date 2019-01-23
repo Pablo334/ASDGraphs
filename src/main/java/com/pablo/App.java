@@ -14,6 +14,7 @@ public class App
         graph.insertNode(new Graph.Node<>(5));
         graph.insertEdge(new Graph.Node<>(3), new Graph.Node<>(5));
         graph.insertEdge(graph.getNodes().get(1), new Graph.Node<>(15));
+        graph.insertNode(new Graph.Node<>(345));
 
         Graph.bfs(graph, graph.getNodes().get(0));
 

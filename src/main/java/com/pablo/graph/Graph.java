@@ -87,7 +87,6 @@ public class Graph<U> {
         node.visit(true);
         while(!nodeQueue.isEmpty()){
             Node<T> u = nodeQueue.removeFirst();
-            System.out.println(u);
             u.getAdjacentNodes().forEach(adjNode -> {
                 if(!adjNode.isVisited()){
                     adjNode.visit(true);
