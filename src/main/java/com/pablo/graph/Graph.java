@@ -2,6 +2,7 @@ package com.pablo.graph;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,15 +11,17 @@ public class Graph<U> {
 
     public Graph(){}
 
-    public void insertNode(Node<U> u){
+    public int insertNode(Node<U> u){
         if(!nodes.contains(u))
             nodes.add(u);
+
+        return nodes.indexOf(u);
     }
 
     public void insertEdge(Node<U> u, Node<U> w){
-        this.insertNode(u);
-        this.insertNode(w);
-        this.getNodes().get(this.getNodes().indexOf(u)).getAdjacentNodes().add(w);
+        int uIndex = this.insertNode(u);
+        int wIndex = this.insertNode(w);
+        this.getNodes().get(uIndex).getAdjacentNodes().add(this.getNodes().get(wIndex));
 
     }
 
@@ -39,6 +42,10 @@ public class Graph<U> {
             this.value = value;
         }
 
+        public T getValue(){
+            return value;
+        }
+
         public List<Node<T>> getAdjacentNodes(){
             return this.adjacentNodes;
         }
@@ -52,6 +59,7 @@ public class Graph<U> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public boolean equals(Object obj){
             if(obj==null) return false;
             if(!(obj instanceof Node)) return false;
@@ -72,14 +80,13 @@ public class Graph<U> {
         }
     }
 
-    public static <T,U> void bfs(Graph<T> g, Node<U> node){
-        LinkedList<Node<U>> nodeQueue = new LinkedList<>();
+    public static <T> void bfs(Graph<T> g, Node<T> node){
+        LinkedList<Node<T>> nodeQueue = new LinkedList<>();
         nodeQueue.addFirst(node);
         g.getNodes().stream().filter(eNode -> !eNode.equals(node)).forEach(eNode -> eNode.visit(false));
         node.visit(true);
         while(!nodeQueue.isEmpty()){
-            Node<U> u = nodeQueue.removeFirst();
-            System.out.println(u);
+            Node<T> u = nodeQueue.removeFirst();
             u.getAdjacentNodes().forEach(adjNode -> {
                 if(!adjNode.isVisited()){
                     adjNode.visit(true);
@@ -87,5 +94,26 @@ public class Graph<U> {
                 }
             });
         }
+    }
+
+    public static <T> void erdos(Graph<T> g, Node<T> node, HashMap<Node<T>, Integer> erdosMap){
+        LinkedList<Node<T>> nodeQueue = new LinkedList<>();
+        nodeQueue.addFirst(node);
+        g.getNodes().stream().filter(eNode -> !eNode.equals(node)).forEach(
+                eNode -> erdosMap.put(eNode, -1)
+        );
+        erdosMap.put(node, 0);
+        while(!nodeQueue.isEmpty()){
+            Node<T> temp = nodeQueue.removeLast();
+            temp.getAdjacentNodes().forEach(
+                    adjNode -> {
+                        if(erdosMap.get(adjNode)==-1){
+                            erdosMap.replace(adjNode, -1, erdosMap.get(temp)+1);
+                            nodeQueue.addFirst(adjNode);
+                        }
+                    }
+            );
+        }
+
     }
 }
