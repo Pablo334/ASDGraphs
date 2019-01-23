@@ -76,7 +76,7 @@ public class Graph<U> {
 
         @Override
         public String toString(){
-            return " Value: " + this.value + " ";
+            return " " +this.value+" ";
         }
     }
 
@@ -86,7 +86,8 @@ public class Graph<U> {
         g.getNodes().stream().filter(eNode -> !eNode.equals(node)).forEach(eNode -> eNode.visit(false));
         node.visit(true);
         while(!nodeQueue.isEmpty()){
-            Node<T> u = nodeQueue.removeFirst();
+            Node<T> u = nodeQueue.removeLast();
+            System.out.println(u);
             u.getAdjacentNodes().forEach(adjNode -> {
                 if(!adjNode.isVisited()){
                     adjNode.visit(true);
@@ -96,24 +97,35 @@ public class Graph<U> {
         }
     }
 
-    public static <T> void erdos(Graph<T> g, Node<T> node, HashMap<Node<T>, Integer> erdosMap){
+    public static <T> void erdos(Graph<T> g, Node<T> node, HashMap<Node<T>, Integer> erdosMap, Node<T>[] parent){
         LinkedList<Node<T>> nodeQueue = new LinkedList<>();
         nodeQueue.addFirst(node);
         g.getNodes().stream().filter(eNode -> !eNode.equals(node)).forEach(
                 eNode -> erdosMap.put(eNode, -1)
         );
         erdosMap.put(node, 0);
+        parent[g.getNodes().indexOf(node)] = null;
         while(!nodeQueue.isEmpty()){
             Node<T> temp = nodeQueue.removeLast();
             temp.getAdjacentNodes().forEach(
                     adjNode -> {
                         if(erdosMap.get(adjNode)==-1){
                             erdosMap.replace(adjNode, -1, erdosMap.get(temp)+1);
+                            parent[g.getNodes().indexOf(adjNode)] = temp;
                             nodeQueue.addFirst(adjNode);
                         }
-                    }
-            );
+                    });
         }
+    }
 
+    public static <T> void printShortestPath(Graph<T> g, Node<T> src, Node<T> dst, Node<T>[] parent){
+        if(src.equals(dst))
+            System.out.println(dst);
+        else if(parent[g.getNodes().indexOf(dst)] == null)
+            System.out.println("Error..... There is no path from Node:" + src + " to Node:" + dst);
+        else {
+            printShortestPath(g, src, parent[g.getNodes().indexOf(dst)], parent);
+            System.out.println(dst);
+        }
     }
 }
