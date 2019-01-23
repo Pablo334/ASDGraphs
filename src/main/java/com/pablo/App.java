@@ -2,9 +2,7 @@ package com.pablo;
 
 import com.pablo.graph.Graph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 public class App 
@@ -23,9 +21,10 @@ public class App
         graph.insertEdge(graph.getNodes().get(1), new Graph.Node<>(15));
         graph.insertNode(new Graph.Node<>(345));
 
-
+        System.out.println("-----------------------BFS--------------------------");
         Graph.bfs(graph, graph.getNodes().get(0));
 
+        System.out.println("-----------------------Erdos--------------------------");
         HashMap<Graph.Node<Integer>, Integer> erdosMap = new HashMap<>();
 
         @SuppressWarnings("unchecked")
@@ -34,7 +33,16 @@ public class App
         Graph.erdos(graph, graph.getNodes().get(0), erdosMap, parentList);
         erdosMap.entrySet().stream().forEach(System.out::println);
 
+        System.out.println("-----------------------Shortest Path--------------------------");
         Graph.printShortestPath(graph, graph.getNodes().get(0), graph.getNodes().get(5), parentList);
+
+        System.out.println("-----------------------DFS Recursive--------------------------");
+        graph.getNodes().forEach(node -> node.visit(false));
+        Graph.dfsRecursive(graph, graph.getNodes().get(0));
+
+        System.out.println("-----------------------DFS Iterative--------------------------");
+        Graph.dfsIterative(graph, graph.getNodes().get(0));
+
 
     }
 }

@@ -1,10 +1,7 @@
 package com.pablo.graph;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Graph<U> {
     private List<Node<U>> nodes = new ArrayList<>();
@@ -36,7 +33,7 @@ public class Graph<U> {
     public static class Node<T>{
         private List<Node<T>> adjacentNodes = new ArrayList<>();
         T value;
-        boolean visited;
+        boolean visited = false;
 
         public Node(T value){
             this.value = value;
@@ -126,6 +123,31 @@ public class Graph<U> {
         else {
             printShortestPath(g, src, parent[g.getNodes().indexOf(dst)], parent);
             System.out.println(dst);
+        }
+    }
+
+    public static <T> void dfsRecursive(Graph<T> g, Node<T> u){
+        u.visit(true);
+        System.out.println(u);
+        u.getAdjacentNodes().forEach(node -> {
+            if(!node.isVisited()){
+                dfsRecursive(g, node);
+            }
+        });
+
+    }
+
+    public static <T> void dfsIterative(Graph<T> g, Node<T> u){
+        Stack<Node<T>> stack = new Stack<>();
+        stack.push(u);
+        g.getNodes().forEach(node -> node.visit(false));
+        while(!stack.empty()){
+            Node<T> temp = stack.pop();
+            if(!temp.isVisited()){
+                System.out.println(temp);
+                temp.visit(true);
+                temp.getAdjacentNodes().forEach(stack::push);
+            }
         }
     }
 }
