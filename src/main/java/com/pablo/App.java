@@ -2,13 +2,14 @@ package com.pablo;
 
 import com.pablo.graph.Graph;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 
 public class App 
 {
     public static void main( String[] args ) {
-
+        /*
         Graph<Integer> graph = new Graph<>();
         graph.insertNode(new Graph.Node<>(3));
         graph.insertNode(new Graph.Node<>(5));
@@ -42,9 +43,28 @@ public class App
 
         System.out.println("-----------------------DFS Iterative--------------------------");
         Graph.dfsIterative(graph, graph.getNodes().get(0));
+        */
 
         System.out.println("-----------------------Connected Components--------------------------");
-
+        Graph<Integer> graph = new Graph<>();
+        graph.insertNode(new Graph.Node<>(3));
+        graph.insertNode(new Graph.Node<>(5));
+        graph.insertNode(new Graph.Node<>(20));
+        graph.insertNode(new Graph.Node<>(25));
+        graph.insertNode(new Graph.Node<>(255));
+        graph.insertNode(new Graph.Node<>(15));
+        graph.insertEdge(new Graph.Node<>(3), new Graph.Node<>(20));
+        graph.insertEdge(new Graph.Node<>(20), new Graph.Node<>(3));
+        graph.insertEdge(new Graph.Node<>(20), new Graph.Node<>(25));
+        graph.insertEdge(new Graph.Node<>(25), new Graph.Node<>(20));
+        graph.insertEdge(new Graph.Node<>(25), new Graph.Node<>(15));
+        graph.insertEdge(new Graph.Node<>(15), new Graph.Node<>(25));
+        graph.insertEdge(new Graph.Node<>(5), new Graph.Node<>(15));
+        graph.insertEdge(new Graph.Node<>(15), new Graph.Node<>(5));
+        graph.insertEdge(new Graph.Node<>(3), new Graph.Node<>(5));
+        graph.insertEdge(new Graph.Node<>(5), new Graph.Node<>(3));
+        int[] connComp = Graph.connComponents(graph);
+        Arrays.stream(connComp).forEach(System.out::println);
 
     }
 }
