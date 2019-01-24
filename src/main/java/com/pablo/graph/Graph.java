@@ -2,6 +2,7 @@ package com.pablo.graph;
 
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Graph<U> {
     private List<Node<U>> nodes = new ArrayList<>();
@@ -149,5 +150,53 @@ public class Graph<U> {
                 temp.getAdjacentNodes().forEach(stack::push);
             }
         }
+    }
+
+    public static <T> int[] connComponents(Graph<T> g){
+        int[] id = new int[g.size()];
+        g.getNodes().forEach(node -> id[g.getNodes().indexOf(node)] = 0);
+        final AtomicReference<Integer> counter = new AtomicReference<>();
+        counter.set(0);
+        g.getNodes().forEach(node -> {
+            if(id[g.getNodes().indexOf(node)] == 0){
+                Integer count = counter.get();
+                counter.set(count+1);
+                ccdfs(g, counter, node, id);
+
+            }
+        });
+        return id;
+    }
+
+    private static <T> void ccdfs(Graph<T> g, AtomicReference<Integer> counter, Node<T> node, int[] id){
+        id[g.getNodes().indexOf(node)] = counter.get();
+        node.getAdjacentNodes().forEach(adjNode -> {
+            if(id[g.getNodes().indexOf(adjNode)] == 0)
+                ccdfs(g, counter, adjNode, id);
+        });
+    }
+
+    public static <T> boolean hasCycle(Graph<T> g){
+        g.getNodes().forEach(node -> node.visit(false));
+        for(Node<T> node : g.getNodes()){
+            if(!node.isVisited()){
+                if(hasCycleRec(g,null, node))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private static <T> boolean hasCycleRec(Graph<T> g, Node<T> parent, Node<T> u){
+        u.visit(true);
+        for (Node<T> eNode : u.getAdjacentNodes()) {
+            if (!eNode.equals(parent)) {
+                if (eNode.isVisited())
+                    return true;
+                else
+                    return hasCycleRec(g, u, eNode);
+            }
+        }
+        return false;
     }
 }
