@@ -43,6 +43,8 @@ public class App
         System.out.println("-----------------------DFS Iterative--------------------------");
         Graph.dfsIterative(graph, graph.getNodes().get(0));
 
+        System.out.println("-----------------------Connected Components--------------------------");
+
 
     }
 }
